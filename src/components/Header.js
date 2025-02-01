@@ -3,9 +3,32 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { toggleMenu } from "../utils/appSlice";
+import { useEffect, useState } from "react";
+import {
+  YOUTUBE_SEARCH_SUGGESIONS_API_IRL,
+  YOUTUBE_VIDEO_LIST_API_URL,
+} from "../utils/constants";
 
 const Header = () => {
+  const [searchQuery, setSearchQuery] = useState(" ");
+  useEffect(() => {
+    fetchSearchSuggestions();
+  }, [searchQuery]);
 
+  const fetchSearchSuggestions = async () => {
+    const url =
+      "https://google-search-master-mega.p.rapidapi.com/patents?q="+searchQuery+"%20treating%20appliance&num=10&page=1";
+    const options = {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": "d5db606c2emsh269a5d0f007a524p10e15ejsn18164aa76d5d",
+        "x-rapidapi-host": "google-search-master-mega.p.rapidapi.com",
+      },
+    };
+    const response = await fetch(url, options);
+    const result = await response.text();
+    console.log(result);
+  };
   const dispatch = useDispatch();
   // const {
   //   transcript,
@@ -14,7 +37,7 @@ const Header = () => {
   //   browserSupportsSpeechRecognition,
   // } = useSpeechRecognition();
 
-  const {browserSupportsSpeechRecognition} = useSpeechRecognition()
+  const { browserSupportsSpeechRecognition } = useSpeechRecognition();
 
   const handleSoundRecord = () => {
     //SpeechRecognition.startListening();
@@ -23,9 +46,9 @@ const Header = () => {
 
   const handleSearch = () => {};
 
-  const handleToggleMenu = () =>{
-     dispatch(toggleMenu());
-  }
+  const handleToggleMenu = () => {
+    dispatch(toggleMenu());
+  };
 
   return (
     <div className="flex ml-4">
@@ -47,6 +70,10 @@ const Header = () => {
         alt="youtube-logo"
       ></img>
       <input
+        value={searchQuery}
+        onChange={(e) => {
+          setSearchQuery(e.target.value);
+        }}
         type="text"
         placeholder="Search"
         className="p-4 my-4 ml-40 w-3/12 h-10 rounded-l-full border border-gray-400 shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-200 hover:border-gray-300 hover:bg-gray-50"
@@ -107,7 +134,21 @@ const Header = () => {
         </svg>
       </button>
       <button className="p-4 m-2 w-28 rounded-sm border border-gray-100">
-      <svg className="feather feather-user" fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <svg
+          className="feather feather-user"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
       </button>
     </div>
   );
